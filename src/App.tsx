@@ -17,7 +17,9 @@ function Photo({slot,label,className='',onNotice}: {slot:string;label:string;cla
   const defaultScreen=slot==='giut'||slot==='giut-detail';
   const defaultCover=slot==='daejeon'||slot==='daejeon-detail';
   const defaultPipeline=slot==='vision-detail';
-  const hasPhoto=!!src||defaultScreen||defaultCover||defaultPipeline;
+  const defaultProfile=slot==='profile';
+  const defaultVisionCard=slot==='vision';
+  const hasPhoto=!!src||defaultScreen||defaultCover||defaultPipeline||defaultProfile||defaultVisionCard;
   // Local previews belong to the published cover revision they were added to.
   const storageKey='jm-photo-'+slot+(defaultCover?'-landscape-v1':defaultPipeline?'-pipeline-v1':'');
   const input=useRef<HTMLInputElement>(null);
@@ -30,7 +32,7 @@ function Photo({slot,label,className='',onNotice}: {slot:string;label:string;cla
   };
   return <div className={`photo-slot ${className} ${hasPhoto?'has-photo':''} ${defaultScreen&&!src?'giut-screen':''} ${defaultCover&&!src?'daejeon-cover':''}`}>
     <button className="photo-button" type="button" aria-label={`${label} ${hasPhoto?'교체':'추가'}`} onClick={()=>input.current?.click()}>
-      {src?<img src={src} alt={label}/>:defaultScreen?<span className="source-crop"><img src={asset("/images/giut-contest-screen.png")} alt="기웃 공모전 목록 화면" width={846} height={1808}/></span>:defaultCover?<img src={asset("/images/daejeon-cover.png")} alt="AI 기반 대전 관광 실시간 플랫폼 대전광 소개" width={1586} height={992}/>:defaultPipeline?<img src={asset("/images/vision-pipeline.png")} alt="질문 기반 이미지 분할 파이프라인 전체 흐름" width={2048} height={1025}/>:<><span className="photo-cross top-left"/><span className="photo-cross bottom-right"/><span className="photo-center"><ImageIcon strokeWidth={1.2} size={29}/><span>[사진]</span><small>{label}</small></span></>}
+      {src?<img src={src} alt={label}/>:defaultScreen?<span className="source-crop"><img src={asset("/images/giut-contest-screen.png")} alt="기웃 공모전 목록 화면" width={846} height={1808}/></span>:defaultCover?<img src={asset("/images/daejeon-cover.png")} alt="AI 기반 대전 관광 실시간 플랫폼 대전광 소개" width={1586} height={992}/>:defaultPipeline?<img src={asset("/images/vision-pipeline.png")} alt="질문 기반 이미지 분할 파이프라인 전체 흐름" width={2048} height={1025}/>:defaultProfile?<img src={asset("/images/profile.jpg")} alt="김정묵 프로필 사진" width={2000} height={1500}/>:defaultVisionCard?<img src={asset("/images/vision-card.webp")} alt="질문 기반 이미지 분할 프로젝트 사진" width={680} height={678}/>:<><span className="photo-cross top-left"/><span className="photo-cross bottom-right"/><span className="photo-center"><ImageIcon strokeWidth={1.2} size={29}/><span>[사진]</span><small>{label}</small></span></>}
       <span className="photo-edit"><Plus size={13}/>{hasPhoto?'사진 바꾸기':'사진 넣기'}</span>
     </button>
     {src&&<button className="photo-reset" onClick={()=>{setSrc('');try{localStorage.removeItem(storageKey);}catch{}onNotice('사진을 초기화했어요.');}} aria-label={`${label} 초기화`}><RotateCcw size={13}/></button>}
