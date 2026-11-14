@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, ArrowRight, ArrowDown, ArrowUp, X, Plus, Image as ImageIcon, Check, Download, Menu, Code2, Layers3, Sparkles, Braces, ChevronRight, RotateCcw } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, ArrowDown, ArrowUp, X, Plus, Image as ImageIcon, Check, Download, Menu, Code2, Layers3, Sparkles, Braces, ChevronRight, RotateCcw, Mail } from 'lucide-react';
 
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
 
@@ -72,9 +72,12 @@ export default function App() {
     <div className="scroll-progress" ref={progress}/>
     <header className="site-header">
       <nav className={menu?'nav open':'nav'} aria-label="메인 메뉴">
-        {[['work','Projects'],['research','Research'],['about','About']].map(([id,label])=><a key={id} href={`#${id}`} className={active===id?'active':''} onClick={()=>setMenu(false)}>{label}<span/></a>)}
+        {[['work','Projects'],['research','Research'],['about','About'],['contact','Contact']].map(([id,label])=><a key={id} href={`#${id}`} className={active===id?'active':''} onClick={()=>setMenu(false)}>{label}<span/></a>)}
       </nav>
-      <a className="header-resume" href={asset("/resume.docx")} download>이력서 <ArrowUpRight size={15}/></a>
+      <div className="header-actions">
+        <a className="header-resume" href={asset("/portfolio.pdf")} target="_blank" rel="noreferrer">포트폴리오 <ArrowUpRight size={15}/></a>
+        <a className="header-resume" href={asset("/resume.pdf")} download="김정묵_포트폴리오.pdf">이력서 <ArrowUpRight size={15}/></a>
+      </div>
       <button className="mobile-menu" aria-label={menu?'메뉴 닫기':'메뉴 열기'} aria-expanded={menu} onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
     </header>
     <main>
@@ -129,7 +132,7 @@ export default function App() {
       </section>
       <section className="toolbox-section section-container"><div className="toolbox-label"><Layers3 size={18}/><span>사용한 기술</span></div><div className="toolbox-items">{['Java','Spring Boot','MySQL','JPA','Docker','AWS','Python','GitHub Actions','Notion','n8n'].map(t=><span key={t}>{t}</span>)}</div></section>
     </main>
-    <footer id="contact" className="footer section-container"><div className="footer-top"><div><div className="eyebrow"><span className="section-index">04 /</span> RESUME</div><h2>이력서<br/>다운로드<span className="green-dot">.</span></h2></div><a href={asset("/resume.docx")} download className="resume-circle"><Download size={27}/><span>이력서 받기</span><ArrowUpRight size={15}/></a></div><div className="footer-contact"><span>이메일과 GitHub 주소는 아직 등록하지 않았습니다.</span><a href="#home">처음으로 <ArrowUp size={15}/></a></div><div className="footer-bottom"><span>김정묵 · Backend developer</span><span>PORTFOLIO / 2026</span></div></footer>
+    <footer id="contact" className="footer section-container"><div className="footer-top"><div><div className="eyebrow"><span className="section-index">04 /</span> CONTACT</div><h2>연락처와<br/>자료 받기<span className="green-dot">.</span></h2></div><div className="footer-downloads"><a href={asset("/portfolio.pdf")} target="_blank" rel="noreferrer" className="resume-circle"><Download size={27}/><span>포트폴리오 PDF</span><ArrowUpRight size={15}/></a><a href={asset("/resume.pdf")} download="김정묵_포트폴리오.pdf" className="resume-circle"><Download size={27}/><span>이력서 받기</span><ArrowUpRight size={15}/></a></div></div><div className="footer-contact"><div className="footer-links"><a href="mailto:wjdanr08691@naver.com"><Mail size={15}/>wjdanr08691@naver.com</a><a href="https://github.com/KimJungMook" target="_blank" rel="noreferrer"><Code2 size={15}/>github.com/KimJungMook</a></div><a href="#home">처음으로 <ArrowUp size={15}/></a></div><div className="footer-bottom"><span>김정묵 · Backend developer</span><span>PORTFOLIO / 2026</span></div></footer>
     <dialog ref={dialog} className="project-dialog" onCancel={e=>{e.preventDefault();close();}} onClick={e=>{if(e.target===dialog.current)close();}} aria-labelledby="project-dialog-title"><div className="dialog-inner">{selected&&<><div className="dialog-top"><span>PROJECT / {selected.number}</span><button className="dialog-close" onClick={close} aria-label="프로젝트 상세 닫기"><X size={22}/></button></div><div className="dialog-heading"><span className="eyebrow">{selected.role}</span><h2 id="project-dialog-title">{selected.name}<span>{selected.en}</span></h2><p>{selected.summary}</p><div className="tags">{selected.tags.map(t=><span key={t}>{t}</span>)}</div></div><div className={`dialog-photo ${selected.theme}`}><Photo key={selected.id} slot={`${selected.id}-detail`} label={`${selected.name} 상세 이미지`} onNotice={setToast}/></div>{selected.id==='vision'&&<a className="image-original-link" href={asset("/images/vision-pipeline.png")} target="_blank" rel="noreferrer">원본 크게 보기 <ArrowUpRight size={14}/></a>}{selected.caseSections?<div className="detailed-case">{selected.caseSections.map(section=><section className="case-section" key={section.eyebrow}><span>{section.eyebrow}</span><h3>{section.title}</h3>{section.paragraphs?.map(text=><p key={text}>{text}</p>)}{section.items&&<ol>{section.items.map((item,index)=><li key={item.title}><span>{String(index+1).padStart(2,'0')}</span><div><h4>{item.title}</h4><p>{item.body}</p></div></li>)}</ol>}</section>)}</div>:<><div className="case-section"><span>01 / CHALLENGE</span><h3>해결할 문제</h3><p>{selected.problem}</p></div><div className="case-section"><span>02 / APPROACH</span><h3>구현 방법</h3><ol>{selected.approach.map((a,i)=><li key={a}><span>{String(i+1).padStart(2,'0')}</span><p>{a}</p></li>)}</ol></div><div className="case-section"><span>03 / OUTCOME</span><h3>확인한 결과</h3><p>{selected.result}</p></div><div className="case-section learning"><span>04 / LEARNING</span><h3>배운 점</h3><p>{selected.lesson}</p></div></>}<div className="dialog-bottom"><button className="text-link" onClick={close}>목록으로 돌아가기 <ArrowRight size={17}/></button><span>PORTFOLIO / 2026</span></div></>}</div></dialog>
     <div className={`toast ${toast?'show':''}`} role="status" aria-live="polite"><Check size={16}/>{toast}</div>
   </>;
